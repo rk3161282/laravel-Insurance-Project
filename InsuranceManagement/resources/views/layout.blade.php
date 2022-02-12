@@ -355,14 +355,14 @@
                                 </a>
                                 <ul class="sub-menu" aria-expanded="false">
                                     <li><a href="{{route('product-groups')}}" data-key="t-carousel">Product Group</a></li>
-                                    <li><a href="ui-alerts.html" data-key="t-alerts">Product</a></li>
-                                    <li><a href="ui-buttons.html" data-key="t-buttons">Customer</a></li>
-                                    <li><a href="ui-cards.html" data-key="t-cards">Service Tax / GST</a></li>
-                                    <li><a href="ui-dropdowns.html" data-key="t-dropdowns">Insurance Company</a></li>
+                                    <li><a href="{{route('products')}}" data-key="t-alerts">Product</a></li>
+                                    <li><a href="{{route('service-tax-gst')}}" data-key="t-cards">Service Tax / GST</a></li>
+                                    <li><a href="{{route('insurance-company')}}" data-key="t-dropdowns">Insurance Company</a></li>
+                                    <li><a href="{{route('insurance-branch')}}" data-key="t-offcanvas">Insurance Branch</a></li>
+                                    <li><a href="{{route('broker-branch')}}" data-key="t-modals">Broker Branch</a></li>
+                                    <li><a href="ui-buttons.html" data-key="t-buttons">Customer</a></li>   
                                     <li><a href="ui-grid.html" data-key="t-grid">Service Provider</a></li>
                                     <li><a href="ui-images.html" data-key="t-images">TeleCaller</a></li>
-                                    <li><a href="ui-modals.html" data-key="t-modals">Broker Branch</a></li>
-                                    <li><a href="ui-offcanvas.html" data-key="t-offcanvas">Insurance Branch</a></li>
                                     <li><a href="ui-progressbars.html" data-key="t-progress-bars">RelationShip Manager</a></li>
                                     <li><a href="ui-placeholders.html" data-key="t-progress-bars">Custom Group</a></li>
                                     <li><a href="ui-tabs-accordions.html" data-key="t-tabs-accordions">Bank Master</a></li>

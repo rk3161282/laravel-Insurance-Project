@@ -3,8 +3,6 @@
 @section('title', 'Product Group')
 @section('styles')
     @parent
-    <!-- choices css -->
-    <link href="{{ URL::asset('assets/libs/choices.js/public/assets/styles/choices.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @section('header')
     @parent

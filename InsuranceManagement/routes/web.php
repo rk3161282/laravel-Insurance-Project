@@ -46,4 +46,9 @@ Route::get('/form-mask','\App\Http\Controllers\DesignController@form_mask')->nam
 /**
  * project route
  */
-Route::get('/product-groups','\App\Http\Controllers\ProductGroupController@index')->name('product-groups');
+Route::get('/product-groups','\App\Http\Controllers\AdminController@index')->name('product-groups');
+Route::get('/products','\App\Http\Controllers\AdminController@products')->name('products');
+Route::get('/service-tax-gst','\App\Http\Controllers\AdminController@service_tax_gst')->name('service-tax-gst');
+Route::get('/insurance-company','\App\Http\Controllers\AdminController@insurance_company')->name('insurance-company');
+Route::get('/insurance-branch','\App\Http\Controllers\AdminController@insurance_branch')->name('insurance-branch');
+Route::get('/broker-branch','\App\Http\Controllers\AdminController@broker_branch')->name('broker-branch');

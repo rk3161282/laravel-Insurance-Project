@@ -3,10 +3,8 @@ $(document).ready(function () {
     // document.getElementById("txtFromDate").value = GetCurrentDate();
     // document.getElementById("txtToDate").value = GetCurrentDate();
 
-    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductGroupList, PageType.Pending, Constant.countQuery);
+    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.InsuranceCompanyList, PageType.Pending, Constant.countQuery);
     
-    loadData1(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductSubGroupList, PageType.Pending, Constant.countQuery);
-
     // $('#txtFromDate').datetimepicker({
     //     format: 'Y-m-d',
     //     maxDate: 0,
@@ -47,7 +45,7 @@ function getlastDate(from) {
 }
 
 $('#btnsearch').click(function () {
-    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductGroupList, PageType.All, Constant.countQuery);
+    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.InsuranceCompanyList, PageType.All, Constant.countQuery);
 });
 //Complain Check
 function ComplianCheck(txn_id, status) {
@@ -180,29 +178,20 @@ $('#ComSubmit').click(function () {
 function Pagination(pageIndex, pageSize, UrlType)
 {
     if (UrlType == PageType.Pending) {
-        loadData(pageIndex, pageSize, SiteUrl.ProductGroupList, PageType.Pending, Constant.countQuery = false);
+        loadData(pageIndex, pageSize, SiteUrl.InsuranceCompanyList, PageType.Pending, Constant.countQuery = false);
     }
     else
     {
-        loadData(pageIndex, pageSize, SiteUrl.ProductGroupList, PageType.All, Constant.countQuery = false);
+        loadData(pageIndex, pageSize, SiteUrl.InsuranceCompanyList, PageType.All, Constant.countQuery = false);
     }
 }
 
-function Pagination1(pageIndex, pageSize, UrlType)
-{
-    if (UrlType == PageType.Pending) {
-        loadData1(pageIndex, pageSize, SiteUrl.ProductSubGroupList, PageType.Pending, Constant.countQuery = false);
-    }
-    else
-    {
-        loadData1(pageIndex, pageSize, SiteUrl.ProductSubGroupList, PageType.All, Constant.countQuery = false);
-    }
-}
 
 //Load Data function
 function loadData(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
     // var SearchByValue = $('#txtsearchbyvalue').val();
- 
+    
+
     var PageIndex = pageIndex;
     var PageSize = pageSize;
 
@@ -214,7 +203,10 @@ function loadData(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
     var start_page = $('#start_page').val();
     var end_page = $('#end_page').val();
 
-    var searchModel = {  '_token': $('meta[name="_token"]').attr('content'),PageIndex: PageIndex, PageSize: PageSize, countQuery:countQuery, TotalItems : TotalItems, TotalPages : TotalPages, start_page : start_page, end_page : end_page,  SearchParams: { } };
+    var search_insurer_name = $("#search_insurer_name").val();
+    var search_insurance_type = $("#search_insurance_type").val();
+
+    var searchModel = {  '_token': $('meta[name="_token"]').attr('content'),PageIndex: PageIndex, PageSize: PageSize, countQuery:countQuery, TotalItems : TotalItems, TotalPages : TotalPages, start_page : start_page, end_page : end_page,  SearchParams: {search_insurer_name:search_insurer_name,search_insurance_type:search_insurance_type } };
     debugger
     $.ajax({
         url: base_url+""+RequestUrl,
@@ -224,7 +216,7 @@ function loadData(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
         dataType: Constant.Json,
         success: function (result) {
             var tr;
-            $("#main_group_table").empty();
+            $("tbody").empty();
             
             var list = result.Pager.Items;  
             $('#TotalItems').val(result.Pager.TotalItems);
@@ -240,12 +232,18 @@ function loadData(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
                     
                     tr = $('<tr/>');
                     tr.append('<td>' + (i) + '</td>');    
-                    tr.append('<td>' + (item.main_group) + '</td>');    
-                    tr.append('<td>' + item.group_type + '</td>');
-                    tr.append('<td>' + GetStatus(item.status) + '</td>');
-                    tr.append('<td onclick="editData(\'' + item.id + '\',\'' + item.main_group + '\',\'' + item.group_type + '\')" ><i class="fa fa-edit" style="font-size:16px;cursor:pointer;"></i></td>');
+                    tr.append('<td>' + (item.insurer_name) + '</td>');    
+                    tr.append('<td>' + item.insurance_type + '</td>');
+                    tr.append('<td>' + (item.brokeragelife_firstyear) + '</td>');    
+                    tr.append('<td>' + (item.brokeragelife_secondyear) + '</td>');
+                    tr.append('<td>' + item.brokeragenonlife_BP + '</td>');
+                    tr.append('<td>' + item.brokeragenonlife_TP + '</td>');
+                    tr.append('<td>' + (item.brokeragenonlife_rewards) + '</td>');    
+                    tr.append('<td>' + (item.brokeragenonlife_terrorism) + '</td>');
+                    tr.append('<td>' + item.other + '</td>');
+                    tr.append('<td onclick="editData(\'' + item.id + '\',\'' + item.insurer_name + '\',\'' + item.insurance_type + '\',\'' + item.brokeragelife_firstyear + '\',\'' + item.brokeragelife_secondyear + '\',\'' + item.brokeragenonlife_BP + '\',\'' + item.brokeragenonlife_TP + '\',\'' + item.brokeragenonlife_rewards + '\',\'' + item.brokeragenonlife_terrorism + '\',\'' + item.other + '\',\'' + item.status + '\')" ><i class="fa fa-edit" style="font-size:16px;cursor:pointer;"></i></td>');
                     tr.append('<td onclick="deleteData(\'' + item.id + '\')" ><i class="fa fa-trash" style="font-size:16px;color:red;cursor:pointer;"></i></td>');
-                    $('#main_group_table').append(tr);
+                    $('tbody').append(tr);
                     i++;
                 });
             }
@@ -253,7 +251,7 @@ function loadData(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
             {
                 tr = $('<tr/>');
                 tr.append('<td valign="top" colspan="13" class="centerCss BoldCss">Oops! Data Not Found</td>');                                 
-                $('#main_group_table').append(tr);
+                $('tbody').append(tr);
             }
             BindPager(result.Pager,UrlType);
         },
@@ -263,68 +261,7 @@ function loadData(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
     });
 }
 
-function loadData1(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
-    // var SearchByValue = $('#txtsearchbyvalue').val();
- 
-    var PageIndex = pageIndex;
-    var PageSize = pageSize;
 
-    var PageIndex = pageIndex;
-    var PageSize = pageSize;
-    var countQuery = countQuery;
-    var TotalItems = $('#TotalItems1').val();
-    var TotalPages = $('#TotalPages1').val();
-    var start_page = $('#start_page1').val();
-    var end_page = $('#end_page1').val();
-
-    var searchModel = {  '_token': $('meta[name="_token"]').attr('content'),PageIndex: PageIndex, PageSize: PageSize, countQuery:countQuery, TotalItems : TotalItems, TotalPages : TotalPages, start_page : start_page, end_page : end_page,  SearchParams: { } };
-    debugger
-    $.ajax({
-        url: base_url+""+RequestUrl,
-        type: Constant.Post,
-        contentType: Constant.ContentType,
-        data: JSON.stringify(searchModel),
-        dataType: Constant.Json,
-        success: function (result) {
-            var tr;
-            $("#sub_group_table").empty();
-            
-            var list = result.Pager.Items;  
-            $('#TotalItems1').val(result.Pager.TotalItems);
-            $('#TotalPages1').val(result.Pager.TotalPages);
-            $('#start_page1').val(result.Pager.StartPage);
-            $('#end_page1').val(result.Pager.EndPage);
-            $('#PageIndex1').val(result.Pager.CurrentPage);
-            $('#PageSize1').val(result.Pager.PageSize);      
-            debugger    
-            if (list != null && list != undefined && list.length >0) {
-                var i = 1;
-                $.each(list, function (index, item) {
-                    
-                    tr = $('<tr/>');
-                    tr.append('<td>' + (i) + '</td>');    
-                    tr.append('<td>' + (item.main_group) + '</td>');    
-                    tr.append('<td>' + item.sub_group_name + '</td>');
-                    tr.append('<td>' + GetStatus(item.status) + '</td>');
-                    tr.append('<td onclick="editData1(\'' + item.id + '\',\'' + item.parent_group_id + '\',\'' + item.sub_group_name + '\')" ><i class="fa fa-edit" style="font-size:16px;cursor:pointer;"></i></td>');
-                    tr.append('<td onclick="deleteData1(\'' + item.id + '\')" ><i class="fa fa-trash" style="font-size:16px;color:red;cursor:pointer;"></i></td>');
-                    $('#sub_group_table').append(tr);
-                    i++;
-                });
-            }
-            else
-            {
-                tr = $('<tr/>');
-                tr.append('<td valign="top" colspan="13" class="centerCss BoldCss">Oops! Data Not Found</td>');                                 
-                $('#sub_group_table').append(tr);
-            }
-            BindPager1(result.Pager,UrlType);
-        },
-        error: function (errormessage) {
-            alert(errormessage.responseText);
-        }
-    });
-}
 
 function GetStatus(status)
 {
@@ -372,7 +309,7 @@ function deleteData(id)
         var searchModel = { id: id };
    
     $.ajax({
-        url: base_url+""+SiteUrl.DeleteProductGroup,
+        url: base_url+""+SiteUrl.DeleteInsuranceCompany,
         type: Constant.Post,
         contentType: Constant.ContentType,
         data: JSON.stringify(searchModel),
@@ -381,8 +318,7 @@ function deleteData(id)
             if (result.Status)
             {                    
                 ShowNotification('success', 'Success', 'Status ' + result.Message);
-                getGroupName();
-                loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductGroupList, PageType.Pending, Constant.countQuery);
+                loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.InsuranceCompanyList, PageType.Pending, Constant.countQuery);
             }
             else {
                 ShowNotification('error', 'Error', result.Message);                    
@@ -398,12 +334,25 @@ function deleteData(id)
 
 $('#submitData').click(function () {
  
-    var group_type = $('#group_type:checked').val();
-    var group_name = $('#group_name').val();  
-    var searchModel = { group_type: group_type, main_group: group_name};
+    
+    // var tax_type = new Array();
+    // $("input[name='tax_type']:checked").each(function() {
+    //     tax_type.push($(this).val());
+    // });
+    var insurer_name = $('#insurer_name').val();  
+    var brokeragelife_firstyear = $('#brokeragelife_firstyear').val();  
+    var brokeragelife_secondyear = $('#brokeragelife_secondyear').val();
+    var brokeragenonlife_BP = $('#brokeragenonlife_BP').val();  
+    var brokeragenonlife_TP = $('#brokeragenonlife_TP').val();  
+    var brokeragenonlife_rewards = $('#brokeragenonlife_rewards').val();
+    var brokeragenonlife_terrorism = $('#brokeragenonlife_terrorism').val();  
+    var other = $('#other').val();
+    var insurance_type = $('#group_type:checked').val();
+
+    var searchModel = { insurance_type: insurance_type, insurer_name: insurer_name,brokeragelife_firstyear:brokeragelife_firstyear,brokeragelife_secondyear:brokeragelife_secondyear,brokeragenonlife_BP:brokeragenonlife_BP,brokeragenonlife_TP:brokeragenonlife_TP,brokeragenonlife_rewards:brokeragenonlife_rewards,brokeragenonlife_terrorism:brokeragenonlife_terrorism,other:other};
     debugger
         $.ajax({
-            url: base_url+""+SiteUrl.AddProductGroup,
+            url: base_url+""+SiteUrl.AddInsuranceCompany,
             type: Constant.Post,
             contentType: Constant.ContentType,
             data: JSON.stringify(searchModel),
@@ -411,10 +360,19 @@ $('#submitData').click(function () {
             success: function (result) {
                 if (result.Status == 200)
                 {  
-                    $('#group_name').val("");                  
+                    $('#insurer_name').val("");     
+                    $('#brokeragelife_firstyear').val("");
+                    $('#brokeragelife_secondyear').val("");       
+                    $('#brokeragenonlife_BP').val("");     
+                    $('#brokeragenonlife_TP').val("");
+                    $('#brokeragenonlife_rewards').val("");    
+                    $('#brokeragenonlife_terrorism').val("");    
+                    $('#other').val("");             
+                    $("input[name=group_type][value='LIFE']").prop('checked', false);
+                    $("input[name=group_type][value='NON LIFE']").prop('checked', false);   
                     ShowNotification('success', 'Success',  result.Message);
-                    getGroupName();
-                    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductGroupList, PageType.Pending, Constant.countQuery);
+                    
+                    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.InsuranceCompanyList, PageType.Pending, Constant.countQuery);
                 }
                 else {
                     ShowNotification('error', 'Error', result.Message);                    
@@ -427,34 +385,75 @@ $('#submitData').click(function () {
 
 });
 
-function editData(id,main_group,group_type){
+function editData(id,insurer_name,insurance_type,brokeragelife_firstyear,brokeragelife_secondyear,brokeragenonlife_BP,brokeragenonlife_TP,brokeragenonlife_rewards,brokeragenonlife_terrorism,other){
     debugger
-    $("#main_group_id").val(id);
-    $("#group_name").val(main_group);
-    // $("[name=group_type]").val(group_type);
-    $("input[name=group_type][value='" + group_type + "']").prop('checked', true);
+   
+    $("#insurance_id").val(id);
+    $("#insurer_name").val(insurer_name);
+    $("#brokeragelife_firstyear").val(brokeragelife_firstyear);
+    $("#brokeragelife_secondyear").val(brokeragelife_secondyear);
+    $("#brokeragenonlife_BP").val(brokeragenonlife_BP);
+    $("#brokeragenonlife_TP").val(brokeragenonlife_TP);
+    $("#brokeragenonlife_rewards").val(brokeragenonlife_rewards);
+    $("#brokeragenonlife_terrorism").val(brokeragenonlife_terrorism);
+    $("#other").val(other);
+    $("input[name=group_type][value='" + insurance_type + "']").prop('checked', true);
+    if (insurance_type == 'LIFE') {
+        $(".brokeragelife_firstyear_show").show();
+        $(".brokeragelife_secondyear_show").show();
+        $(".brokeragenonlife_BP_show").hide();
+        $(".brokeragenonlife_TP_show").hide();
+        $(".brokeragenonlife_rewards_show").hide();
+        $(".brokeragenonlife_terrorism_show").hide();
+        $(".other_show").hide();
+    }
+    else if (insurance_type == 'NON LIFE') {
+        $(".brokeragelife_firstyear_show").hide();
+        $(".brokeragelife_secondyear_show").hide();
+        $(".brokeragenonlife_BP_show").show();
+        $(".brokeragenonlife_TP_show").show();
+        $(".brokeragenonlife_rewards_show").show();
+        $(".brokeragenonlife_terrorism_show").show();
+        $(".other_show").show();
+    }
+    
     $(".submitData").hide();
     $(".updateData").show();
 }
 
 $('.cancelData').click(function () {
-    $("#main_group_id").val("");
-    $("#group_name").val("");
-    $("input[name=group_type][value='LIFE']").prop('checked', true);
+    $("#insurance_id").val("");
+    $("#insurer_name").val("");
+    $("#brokeragelife_firstyear").val("");
+    $("#brokeragelife_secondyear").val("");
+    $("#brokeragenonlife_BP").val("");
+    $("#brokeragenonlife_TP").val("");
+    $("#brokeragenonlife_rewards").val("");
+    $("#brokeragenonlife_terrorism").val("");
+    $("#other").val(other);
+
     $(".submitData").show();
     $(".updateData").hide();
 });
 
 $('#updateData').click(function () {
  
-    // var CompType = $('#ctype option:selected').val();
-    var group_type = $('#group_type:checked').val();
-    var group_name = $('#group_name').val();  
-    var main_group_id = $('#main_group_id').val();  
-    var searchModel = { group_type: group_type, main_group: group_name,main_group_id:main_group_id};
+    var insurance_id = $('#insurance_id').val(); 
+    var insurer_name = $('#insurer_name').val();  
+    var brokeragelife_firstyear = $('#brokeragelife_firstyear').val();  
+    var brokeragelife_secondyear = $('#brokeragelife_secondyear').val();
+    var brokeragenonlife_BP = $('#brokeragenonlife_BP').val();  
+    var brokeragenonlife_TP = $('#brokeragenonlife_TP').val();  
+    var brokeragenonlife_rewards = $('#brokeragenonlife_rewards').val();
+    var brokeragenonlife_terrorism = $('#brokeragenonlife_terrorism').val();  
+    var other = $('#other').val();
+    var insurance_type = $('#group_type:checked').val();
+
+    var searchModel = { insurance_id:insurance_id,insurance_type: insurance_type, insurer_name: insurer_name,brokeragelife_firstyear:brokeragelife_firstyear,brokeragelife_secondyear:brokeragelife_secondyear,brokeragenonlife_BP:brokeragenonlife_BP,brokeragenonlife_TP:brokeragenonlife_TP,brokeragenonlife_rewards:brokeragenonlife_rewards,brokeragenonlife_terrorism:brokeragenonlife_terrorism,other:other};
+    debugger
   
         $.ajax({
-            url: base_url+""+SiteUrl.UpdateProductGroup,
+            url: base_url+""+SiteUrl.UpdateInsuranceCompany,
             type: Constant.Post,
             contentType: Constant.ContentType,
             data: JSON.stringify(searchModel),
@@ -462,127 +461,19 @@ $('#updateData').click(function () {
             success: function (result) {
                 if (result.Status == 200)
                 {                    
-                    $('#group_name').val("");       
-                    ShowNotification('success', 'Success',  result.Message);
-                    $(".submitData").show();
-                    $(".updateData").hide();   
-                    getGroupName();
-                    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductGroupList, PageType.Pending, Constant.countQuery);
-                }
-                else {
-                    ShowNotification('error', 'Error', result.Message);                    
-                }
-            },
-            error: function (errormessage) {
-                ShowNotification('error', 'Error', 'Error..');                
-            }
-        });
-
-});
-
-function getGroupName(){
-    debugger
-    $("#single-select").html("");
-    $.ajax({
-        url: base_url+""+SiteUrl.productGroupName,
-        type: Constant.Post,
-        contentType: Constant.ContentType,
-        // data: JSON.stringify(searchModel),
-        dataType: Constant.Json,
-        success: function (result) {
-            if (result.Status == 200)
-            {           
-                         
-                for (i = 0; i < result.data.length; i++) {
-                    $("#single-select").append('<option value="'+result.data[i].id+'">'+result.data[i].main_group+'</option>');
-                }
-    
-                debugger          
-            }
-            else {
-                ShowNotification('error', 'Error', result.Message);                    
-            }
-        },
-        error: function (errormessage) {
-            ShowNotification('error', 'Error', 'Error..');                
-        }
-    });
-}
-
-getGroupName();
-
-$('#submitData1').click(function () {
- 
-    var parent_group_id = $('#single-select option:selected').val();
-    var sub_group_name = $('#sub_group_name').val();  
-    var searchModel = { parent_group_id: parent_group_id, sub_group_name: sub_group_name};
-    debugger
-        $.ajax({
-            url: base_url+""+SiteUrl.AddProductSubGroup,
-            type: Constant.Post,
-            contentType: Constant.ContentType,
-            data: JSON.stringify(searchModel),
-            dataType: Constant.Json,
-            success: function (result) {
-                if (result.Status == 200)
-                {  
-                    $('#sub_group_name').val("");   
-                    $('#single-select').val("");            
-                    ShowNotification('success', 'Success',  result.Message);
-                    loadData1(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductSubGroupList, PageType.Pending, Constant.countQuery);
-                }
-                else {
-                    ShowNotification('error', 'Error', result.Message);                    
-                }
-            },
-            error: function (errormessage) {
-                ShowNotification('error', 'Error', 'Error..');                
-            }
-        });
-
-});
-
-function editData1(id,parent_group_id,sub_group_name){
-    debugger
-    $("#sub_group_id").val(id);
-    $("#sub_group_name").val(sub_group_name);
-    $("#single-select").select2("val", parent_group_id);
-    $(".submitData1").hide();
-    $(".updateData1").show();
-}
-
-$('.cancelData1').click(function () {
-    $("#sub_group_id").val("");
-    $("#sub_group_name").val("");
-    $("#single-select").select2("val", "");
-    $(".submitData1").show();
-    $(".updateData1").hide();
-});
-
-$('#updateData1').click(function () {
- 
-    // var CompType = $('#ctype option:selected').val();
-    var parent_group_id = $('#single-select option:selected').val();
-    var sub_group_name = $('#sub_group_name').val();  
-    var sub_group_id = $('#sub_group_id').val();  
-    var searchModel = { parent_group_id: parent_group_id, sub_group_name: sub_group_name,sub_group_id:sub_group_id};
-  
-        $.ajax({
-            url: base_url+""+SiteUrl.UpdateProductSubGroup,
-            type: Constant.Post,
-            contentType: Constant.ContentType,
-            data: JSON.stringify(searchModel),
-            dataType: Constant.Json,
-            success: function (result) {
-                if (result.Status == 200)
-                {                    
-                    $('#sub_group_name').val("");   
-                    $('#single-select').val("");            
+                    $("#insurance_id").val("");
+                    $("#insurer_name").val("");
+                    $("#brokeragelife_firstyear").val("");
+                    $("#brokeragelife_secondyear").val("");
+                    $("#brokeragenonlife_BP").val("");
+                    $("#brokeragenonlife_TP").val("");
+                    $("#brokeragenonlife_rewards").val("");
+                    $("#brokeragenonlife_terrorism").val("");
+                    $("#other").val("");
                     $(".submitData").show();
                     $(".updateData").hide();   
                     ShowNotification('success', 'Success',  result.Message);
-                   
-                    loadData1(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductSubGroupList, PageType.Pending, Constant.countQuery);
+                    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.InsuranceCompanyList, PageType.Pending, Constant.countQuery);
                 }
                 else {
                     ShowNotification('error', 'Error', result.Message);                    
@@ -595,32 +486,25 @@ $('#updateData1').click(function () {
 
 });
 
-function deleteData1(id)
-{
-    var result = confirm("Want to delete?");
-    if (result) {
-        var searchModel = { id: id };
-   
-    $.ajax({
-        url: base_url+""+SiteUrl.DeleteProductSubGroup,
-        type: Constant.Post,
-        contentType: Constant.ContentType,
-        data: JSON.stringify(searchModel),
-        dataType: Constant.Json,
-        success: function (result) {
-            if (result.Status)
-            {                    
-                ShowNotification('success', 'Success', 'Status ' + result.Message);
-                loadData1(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductSubGroupList, PageType.Pending, Constant.countQuery);
-            }
-            else {
-                ShowNotification('error', 'Error', result.Message);                    
-            }
-        },
-        error: function (errormessage) {
-            ShowNotification('error', 'Error', 'Error..');                
-        }
-    });
+$('input[type=radio][name=group_type]').change(function() {
+    console.log(this.value);
+    debugger
+    if (this.value == 'LIFE') {
+        $(".brokeragelife_firstyear_show").show();
+        $(".brokeragelife_secondyear_show").show();
+        $(".brokeragenonlife_BP_show").hide();
+        $(".brokeragenonlife_TP_show").hide();
+        $(".brokeragenonlife_rewards_show").hide();
+        $(".brokeragenonlife_terrorism_show").hide();
+        $(".other_show").hide();
     }
-    
-}
+    else if (this.value == 'NON LIFE') {
+        $(".brokeragelife_firstyear_show").hide();
+        $(".brokeragelife_secondyear_show").hide();
+        $(".brokeragenonlife_BP_show").show();
+        $(".brokeragenonlife_TP_show").show();
+        $(".brokeragenonlife_rewards_show").show();
+        $(".brokeragenonlife_terrorism_show").show();
+        $(".other_show").show();
+    }
+});

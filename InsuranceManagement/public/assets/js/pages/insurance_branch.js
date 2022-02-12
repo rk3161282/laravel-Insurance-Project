@@ -3,10 +3,8 @@ $(document).ready(function () {
     // document.getElementById("txtFromDate").value = GetCurrentDate();
     // document.getElementById("txtToDate").value = GetCurrentDate();
 
-    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductGroupList, PageType.Pending, Constant.countQuery);
+    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.InsuranceBranchList, PageType.Pending, Constant.countQuery);
     
-    loadData1(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductSubGroupList, PageType.Pending, Constant.countQuery);
-
     // $('#txtFromDate').datetimepicker({
     //     format: 'Y-m-d',
     //     maxDate: 0,
@@ -47,7 +45,7 @@ function getlastDate(from) {
 }
 
 $('#btnsearch').click(function () {
-    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductGroupList, PageType.All, Constant.countQuery);
+    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.InsuranceBranchList, PageType.All, Constant.countQuery);
 });
 //Complain Check
 function ComplianCheck(txn_id, status) {
@@ -180,29 +178,20 @@ $('#ComSubmit').click(function () {
 function Pagination(pageIndex, pageSize, UrlType)
 {
     if (UrlType == PageType.Pending) {
-        loadData(pageIndex, pageSize, SiteUrl.ProductGroupList, PageType.Pending, Constant.countQuery = false);
+        loadData(pageIndex, pageSize, SiteUrl.InsuranceBranchList, PageType.Pending, Constant.countQuery = false);
     }
     else
     {
-        loadData(pageIndex, pageSize, SiteUrl.ProductGroupList, PageType.All, Constant.countQuery = false);
+        loadData(pageIndex, pageSize, SiteUrl.InsuranceBranchList, PageType.All, Constant.countQuery = false);
     }
 }
 
-function Pagination1(pageIndex, pageSize, UrlType)
-{
-    if (UrlType == PageType.Pending) {
-        loadData1(pageIndex, pageSize, SiteUrl.ProductSubGroupList, PageType.Pending, Constant.countQuery = false);
-    }
-    else
-    {
-        loadData1(pageIndex, pageSize, SiteUrl.ProductSubGroupList, PageType.All, Constant.countQuery = false);
-    }
-}
 
 //Load Data function
 function loadData(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
     // var SearchByValue = $('#txtsearchbyvalue').val();
- 
+    
+
     var PageIndex = pageIndex;
     var PageSize = pageSize;
 
@@ -214,7 +203,10 @@ function loadData(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
     var start_page = $('#start_page').val();
     var end_page = $('#end_page').val();
 
-    var searchModel = {  '_token': $('meta[name="_token"]').attr('content'),PageIndex: PageIndex, PageSize: PageSize, countQuery:countQuery, TotalItems : TotalItems, TotalPages : TotalPages, start_page : start_page, end_page : end_page,  SearchParams: { } };
+    var search_insurer_name = $("#search_insurer_name").val();
+    var search_insurance_type = $("#search_insurance_type").val();
+
+    var searchModel = {  '_token': $('meta[name="_token"]').attr('content'),PageIndex: PageIndex, PageSize: PageSize, countQuery:countQuery, TotalItems : TotalItems, TotalPages : TotalPages, start_page : start_page, end_page : end_page,  SearchParams: {search_insurer_name:search_insurer_name,search_insurance_type:search_insurance_type } };
     debugger
     $.ajax({
         url: base_url+""+RequestUrl,
@@ -224,7 +216,7 @@ function loadData(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
         dataType: Constant.Json,
         success: function (result) {
             var tr;
-            $("#main_group_table").empty();
+            $("tbody").empty();
             
             var list = result.Pager.Items;  
             $('#TotalItems').val(result.Pager.TotalItems);
@@ -240,12 +232,24 @@ function loadData(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
                     
                     tr = $('<tr/>');
                     tr.append('<td>' + (i) + '</td>');    
-                    tr.append('<td>' + (item.main_group) + '</td>');    
-                    tr.append('<td>' + item.group_type + '</td>');
-                    tr.append('<td>' + GetStatus(item.status) + '</td>');
-                    tr.append('<td onclick="editData(\'' + item.id + '\',\'' + item.main_group + '\',\'' + item.group_type + '\')" ><i class="fa fa-edit" style="font-size:16px;cursor:pointer;"></i></td>');
+                    tr.append('<td>' + (item.insurer_name) + '</td>');    
+                    tr.append('<td>' + item.product_type + '</td>');
+                    tr.append('<td>' + (item.insurer_office_name) + '</td>');    
+                    tr.append('<td>' + (item.insurer_office_code) + '</td>');
+                    tr.append('<td>' + item.gst_no + '</td>');
+                    tr.append('<td>' + item.address + '</td>');
+                    tr.append('<td>' + (item.city) + '</td>');    
+                    tr.append('<td>' + (item.state) + '</td>');
+                    tr.append('<td>' + item.country + '</td>');
+                    tr.append('<td>' + item.zip_code + '</td>');
+                    tr.append('<td>' + (item.fax_number) + '</td>');    
+                    tr.append('<td>' + (item.mobile_number) + '</td>');
+                    tr.append('<td>' + item.phone_number + '</td>');
+                    tr.append('<td>' + item.email + '</td>');
+                    tr.append('<td>' + item.comment + '</td>');
+                    tr.append('<td onclick="editData(\'' + item.id + '\',\'' + item.insurance_company_id + '\',\'' + item.product_type + '\',\'' + item.insurer_office_name + '\',\'' + item.insurer_office_code + '\',\'' + item.gst_no + '\',\'' + item.address + '\',\'' + item.city + '\',\'' + item.state + '\',\'' + item.country + '\',\'' + item.zip_code + '\',\'' + item.fax_number + '\',\'' + item.mobile_number + '\',\'' + item.phone_number + '\',\'' + item.email + '\',\'' + item.comment + '\')" ><i class="fa fa-edit" style="font-size:16px;cursor:pointer;"></i></td>');
                     tr.append('<td onclick="deleteData(\'' + item.id + '\')" ><i class="fa fa-trash" style="font-size:16px;color:red;cursor:pointer;"></i></td>');
-                    $('#main_group_table').append(tr);
+                    $('tbody').append(tr);
                     i++;
                 });
             }
@@ -253,7 +257,7 @@ function loadData(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
             {
                 tr = $('<tr/>');
                 tr.append('<td valign="top" colspan="13" class="centerCss BoldCss">Oops! Data Not Found</td>');                                 
-                $('#main_group_table').append(tr);
+                $('tbody').append(tr);
             }
             BindPager(result.Pager,UrlType);
         },
@@ -263,68 +267,7 @@ function loadData(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
     });
 }
 
-function loadData1(pageIndex, pageSize,RequestUrl,UrlType, countQuery) {
-    // var SearchByValue = $('#txtsearchbyvalue').val();
- 
-    var PageIndex = pageIndex;
-    var PageSize = pageSize;
 
-    var PageIndex = pageIndex;
-    var PageSize = pageSize;
-    var countQuery = countQuery;
-    var TotalItems = $('#TotalItems1').val();
-    var TotalPages = $('#TotalPages1').val();
-    var start_page = $('#start_page1').val();
-    var end_page = $('#end_page1').val();
-
-    var searchModel = {  '_token': $('meta[name="_token"]').attr('content'),PageIndex: PageIndex, PageSize: PageSize, countQuery:countQuery, TotalItems : TotalItems, TotalPages : TotalPages, start_page : start_page, end_page : end_page,  SearchParams: { } };
-    debugger
-    $.ajax({
-        url: base_url+""+RequestUrl,
-        type: Constant.Post,
-        contentType: Constant.ContentType,
-        data: JSON.stringify(searchModel),
-        dataType: Constant.Json,
-        success: function (result) {
-            var tr;
-            $("#sub_group_table").empty();
-            
-            var list = result.Pager.Items;  
-            $('#TotalItems1').val(result.Pager.TotalItems);
-            $('#TotalPages1').val(result.Pager.TotalPages);
-            $('#start_page1').val(result.Pager.StartPage);
-            $('#end_page1').val(result.Pager.EndPage);
-            $('#PageIndex1').val(result.Pager.CurrentPage);
-            $('#PageSize1').val(result.Pager.PageSize);      
-            debugger    
-            if (list != null && list != undefined && list.length >0) {
-                var i = 1;
-                $.each(list, function (index, item) {
-                    
-                    tr = $('<tr/>');
-                    tr.append('<td>' + (i) + '</td>');    
-                    tr.append('<td>' + (item.main_group) + '</td>');    
-                    tr.append('<td>' + item.sub_group_name + '</td>');
-                    tr.append('<td>' + GetStatus(item.status) + '</td>');
-                    tr.append('<td onclick="editData1(\'' + item.id + '\',\'' + item.parent_group_id + '\',\'' + item.sub_group_name + '\')" ><i class="fa fa-edit" style="font-size:16px;cursor:pointer;"></i></td>');
-                    tr.append('<td onclick="deleteData1(\'' + item.id + '\')" ><i class="fa fa-trash" style="font-size:16px;color:red;cursor:pointer;"></i></td>');
-                    $('#sub_group_table').append(tr);
-                    i++;
-                });
-            }
-            else
-            {
-                tr = $('<tr/>');
-                tr.append('<td valign="top" colspan="13" class="centerCss BoldCss">Oops! Data Not Found</td>');                                 
-                $('#sub_group_table').append(tr);
-            }
-            BindPager1(result.Pager,UrlType);
-        },
-        error: function (errormessage) {
-            alert(errormessage.responseText);
-        }
-    });
-}
 
 function GetStatus(status)
 {
@@ -372,7 +315,7 @@ function deleteData(id)
         var searchModel = { id: id };
    
     $.ajax({
-        url: base_url+""+SiteUrl.DeleteProductGroup,
+        url: base_url+""+SiteUrl.DeleteInsuranceBranch,
         type: Constant.Post,
         contentType: Constant.ContentType,
         data: JSON.stringify(searchModel),
@@ -381,8 +324,7 @@ function deleteData(id)
             if (result.Status)
             {                    
                 ShowNotification('success', 'Success', 'Status ' + result.Message);
-                getGroupName();
-                loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductGroupList, PageType.Pending, Constant.countQuery);
+                loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.InsuranceBranchList, PageType.Pending, Constant.countQuery);
             }
             else {
                 ShowNotification('error', 'Error', result.Message);                    
@@ -398,12 +340,31 @@ function deleteData(id)
 
 $('#submitData').click(function () {
  
-    var group_type = $('#group_type:checked').val();
-    var group_name = $('#group_name').val();  
-    var searchModel = { group_type: group_type, main_group: group_name};
+    
+    // var tax_type = new Array();
+    // $("input[name='tax_type']:checked").each(function() {
+    //     tax_type.push($(this).val());
+    // });
+    var insurance_company_id = $('#insurance_company_id option:selected').val();
+    var insurer_office_name = $('#insurer_office_name').val();  
+    var insurer_office_code = $('#insurer_office_code').val();  
+    var address = $('#address').val();
+    var city = $('#city').val();  
+    var state = $('#state').val();  
+    var country = $('#country').val();
+    var zip_code = $('#zip_code').val();  
+    var gst_no = $('#gst_no').val();
+    var fax_number = $('#fax_number').val();
+    var mobile_number = $('#mobile_number').val();
+    var phone_number = $('#phone_number').val();
+    var email = $('#email').val();
+    var comment = $('#comment').val();
+    var product_type = $('#group_type:checked').val();
+
+    var searchModel = { insurance_company_id: insurance_company_id, insurer_office_name: insurer_office_name,insurer_office_code:insurer_office_code,address:address,city:city,state:state,country:country,zip_code:zip_code,gst_no:gst_no,fax_number:fax_number,mobile_number:mobile_number,phone_number:phone_number,email:email,comment:comment,product_type:product_type};
     debugger
         $.ajax({
-            url: base_url+""+SiteUrl.AddProductGroup,
+            url: base_url+""+SiteUrl.AddInsuranceBranch,
             type: Constant.Post,
             contentType: Constant.ContentType,
             data: JSON.stringify(searchModel),
@@ -411,10 +372,25 @@ $('#submitData').click(function () {
             success: function (result) {
                 if (result.Status == 200)
                 {  
-                    $('#group_name').val("");                  
+                    $("#insurance_branch_id").val("");
+                    $('#insurer_office_name').val("");  
+                    $('#insurer_office_code').val("");  
+                    $('#address').val("");
+                    $('#city').val("");  
+                    $('#state').val("");  
+                    $('#country').val("");
+                    $('#zip_code').val("");  
+                    $('#gst_no').val("");
+                    $('#fax_number').val("");
+                    $('#mobile_number').val("");
+                    $('#phone_number').val("");
+                    $('#email').val("");
+                    $('#comment').val("");         
+                    $("input[name=group_type][value='LIFE']").prop('checked', false);
+                    $("input[name=group_type][value='NON LIFE']").prop('checked', false);   
                     ShowNotification('success', 'Success',  result.Message);
-                    getGroupName();
-                    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductGroupList, PageType.Pending, Constant.countQuery);
+                    
+                    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.InsuranceBranchList, PageType.Pending, Constant.countQuery);
                 }
                 else {
                     ShowNotification('error', 'Error', result.Message);                    
@@ -427,34 +403,107 @@ $('#submitData').click(function () {
 
 });
 
-function editData(id,main_group,group_type){
+function editData(id,insurance_company_id,product_type,insurer_office_name,insurer_office_code,gst_no,address,city,state,country,zip_code,fax_number,mobile_number,phone_number,email,comment){
     debugger
-    $("#main_group_id").val(id);
-    $("#group_name").val(main_group);
-    // $("[name=group_type]").val(group_type);
-    $("input[name=group_type][value='" + group_type + "']").prop('checked', true);
+   
+    $("#insurance_branch_id").val(id);
+    
+    $('#insurer_office_name').val(insurer_office_name);  
+    $('#insurer_office_code').val(insurer_office_code);  
+    $('#address').val(address);
+    $('#city').val(city);  
+    $('#state').val(state);  
+    $('#country').val(country);
+    $('#zip_code').val(zip_code);  
+    $('#gst_no').val(gst_no);
+    $('#fax_number').val(fax_number);
+    $('#mobile_number').val(mobile_number);
+    $('#phone_number').val(phone_number);
+    $('#email').val(email);
+    $('#comment').val(comment);
+
+    $("input[name=group_type][value='" + product_type + "']").prop('checked', true);
+    var searchModel = {insurance_type:product_type};
+    $("#insurance_company_id").html("");
+    $.ajax({
+        url: base_url+""+SiteUrl.getInsurerName,
+        type: Constant.Post,
+        contentType: Constant.ContentType,
+        data: JSON.stringify(searchModel),
+        dataType: Constant.Json,
+        success: function (result) {
+            if (result.Status == 200)
+            {           
+                $("#insurance_company_id").append('<option value="">Select Insurer Name</option>'); 
+               
+                for (i = 0; i < result.data.length; i++) {
+                    $("#insurance_company_id").append('<option value="'+result.data[i].id+'">'+result.data[i].insurer_name+'</option>');
+                    
+                }
+                $("#insurance_company_id").select2("val", insurance_company_id);
+    
+                debugger          
+            }
+            else {
+                ShowNotification('error', 'Error', result.Message);                    
+            }
+        },
+        error: function (errormessage) {
+            ShowNotification('error', 'Error', 'Error..');                
+        }
+    });
+   
+    
     $(".submitData").hide();
     $(".updateData").show();
 }
 
 $('.cancelData').click(function () {
-    $("#main_group_id").val("");
-    $("#group_name").val("");
-    $("input[name=group_type][value='LIFE']").prop('checked', true);
+    $("#insurance_branch_id").val("");
+    $('#insurer_office_name').val("");  
+    $('#insurer_office_code').val("");  
+    $('#address').val("");
+    $('#city').val("");  
+    $('#state').val("");  
+    $('#country').val("");
+    $('#zip_code').val("");  
+    $('#gst_no').val("");
+    $('#fax_number').val("");
+    $('#mobile_number').val("");
+    $('#phone_number').val("");
+    $('#email').val("");
+    $('#comment').val("");         
+    $("input[name=group_type][value='LIFE']").prop('checked', false);
+    $("input[name=group_type][value='NON LIFE']").prop('checked', false);   
+
     $(".submitData").show();
     $(".updateData").hide();
 });
 
 $('#updateData').click(function () {
  
-    // var CompType = $('#ctype option:selected').val();
-    var group_type = $('#group_type:checked').val();
-    var group_name = $('#group_name').val();  
-    var main_group_id = $('#main_group_id').val();  
-    var searchModel = { group_type: group_type, main_group: group_name,main_group_id:main_group_id};
+    var insurance_branch_id = $('#insurance_branch_id').val(); 
+    var insurance_company_id = $('#insurance_company_id option:selected').val();
+    var insurer_office_name = $('#insurer_office_name').val();  
+    var insurer_office_code = $('#insurer_office_code').val();  
+    var address = $('#address').val();
+    var city = $('#city').val();  
+    var state = $('#state').val();  
+    var country = $('#country').val();
+    var zip_code = $('#zip_code').val();  
+    var gst_no = $('#gst_no').val();
+    var fax_number = $('#fax_number').val();
+    var mobile_number = $('#mobile_number').val();
+    var phone_number = $('#phone_number').val();
+    var email = $('#email').val();
+    var comment = $('#comment').val();
+    var product_type = $('#group_type:checked').val();
+
+    var searchModel = {insurance_branch_id:insurance_branch_id, insurance_company_id: insurance_company_id, insurer_office_name: insurer_office_name,insurer_office_code:insurer_office_code,address:address,city:city,state:state,country:country,zip_code:zip_code,gst_no:gst_no,fax_number:fax_number,mobile_number:mobile_number,phone_number:phone_number,email:email,comment:comment,product_type:product_type};
+    debugger
   
         $.ajax({
-            url: base_url+""+SiteUrl.UpdateProductGroup,
+            url: base_url+""+SiteUrl.UpdateInsuranceBranch,
             type: Constant.Post,
             contentType: Constant.ContentType,
             data: JSON.stringify(searchModel),
@@ -462,12 +511,26 @@ $('#updateData').click(function () {
             success: function (result) {
                 if (result.Status == 200)
                 {                    
-                    $('#group_name').val("");       
-                    ShowNotification('success', 'Success',  result.Message);
+                    $("#insurance_branch_id").val("");
+                    $('#insurer_office_name').val("");  
+                    $('#insurer_office_code').val("");  
+                    $('#address').val("");
+                    $('#city').val("");  
+                    $('#state').val("");  
+                    $('#country').val("");
+                    $('#zip_code').val("");  
+                    $('#gst_no').val("");
+                    $('#fax_number').val("");
+                    $('#mobile_number').val("");
+                    $('#phone_number').val("");
+                    $('#email').val("");
+                    $('#comment').val("");         
+                    $("input[name=group_type][value='LIFE']").prop('checked', false);
+                    $("input[name=group_type][value='NON LIFE']").prop('checked', false);  
                     $(".submitData").show();
-                    $(".updateData").hide();   
-                    getGroupName();
-                    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductGroupList, PageType.Pending, Constant.countQuery);
+                    $(".updateData").hide();    
+                    ShowNotification('success', 'Success',  result.Message);
+                    loadData(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.InsuranceBranchList, PageType.Pending, Constant.countQuery);
                 }
                 else {
                     ShowNotification('error', 'Error', result.Message);                    
@@ -480,22 +543,37 @@ $('#updateData').click(function () {
 
 });
 
-function getGroupName(){
+$('input[type=radio][name=group_type]').change(function() {
+    console.log(this.value);
     debugger
-    $("#single-select").html("");
+    if (this.value == 'LIFE') {
+        getInsurerName('LIFE');
+    }
+    else if (this.value == 'NON LIFE') {
+        getInsurerName('NON LIFE');
+    }
+});
+
+function getInsurerName(insurance_type){
+    debugger
+    var searchModel = {insurance_type:insurance_type};
+    $("#insurance_company_id").html("");
     $.ajax({
-        url: base_url+""+SiteUrl.productGroupName,
+        url: base_url+""+SiteUrl.getInsurerName,
         type: Constant.Post,
         contentType: Constant.ContentType,
-        // data: JSON.stringify(searchModel),
+        data: JSON.stringify(searchModel),
         dataType: Constant.Json,
         success: function (result) {
             if (result.Status == 200)
             {           
-                         
+                $("#insurance_company_id").append('<option value="">Select Insurer Name</option>'); 
+               
                 for (i = 0; i < result.data.length; i++) {
-                    $("#single-select").append('<option value="'+result.data[i].id+'">'+result.data[i].main_group+'</option>');
+                    $("#insurance_company_id").append('<option value="'+result.data[i].id+'">'+result.data[i].insurer_name+'</option>');
+                    
                 }
+                
     
                 debugger          
             }
@@ -509,118 +587,4 @@ function getGroupName(){
     });
 }
 
-getGroupName();
-
-$('#submitData1').click(function () {
- 
-    var parent_group_id = $('#single-select option:selected').val();
-    var sub_group_name = $('#sub_group_name').val();  
-    var searchModel = { parent_group_id: parent_group_id, sub_group_name: sub_group_name};
-    debugger
-        $.ajax({
-            url: base_url+""+SiteUrl.AddProductSubGroup,
-            type: Constant.Post,
-            contentType: Constant.ContentType,
-            data: JSON.stringify(searchModel),
-            dataType: Constant.Json,
-            success: function (result) {
-                if (result.Status == 200)
-                {  
-                    $('#sub_group_name').val("");   
-                    $('#single-select').val("");            
-                    ShowNotification('success', 'Success',  result.Message);
-                    loadData1(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductSubGroupList, PageType.Pending, Constant.countQuery);
-                }
-                else {
-                    ShowNotification('error', 'Error', result.Message);                    
-                }
-            },
-            error: function (errormessage) {
-                ShowNotification('error', 'Error', 'Error..');                
-            }
-        });
-
-});
-
-function editData1(id,parent_group_id,sub_group_name){
-    debugger
-    $("#sub_group_id").val(id);
-    $("#sub_group_name").val(sub_group_name);
-    $("#single-select").select2("val", parent_group_id);
-    $(".submitData1").hide();
-    $(".updateData1").show();
-}
-
-$('.cancelData1').click(function () {
-    $("#sub_group_id").val("");
-    $("#sub_group_name").val("");
-    $("#single-select").select2("val", "");
-    $(".submitData1").show();
-    $(".updateData1").hide();
-});
-
-$('#updateData1').click(function () {
- 
-    // var CompType = $('#ctype option:selected').val();
-    var parent_group_id = $('#single-select option:selected').val();
-    var sub_group_name = $('#sub_group_name').val();  
-    var sub_group_id = $('#sub_group_id').val();  
-    var searchModel = { parent_group_id: parent_group_id, sub_group_name: sub_group_name,sub_group_id:sub_group_id};
-  
-        $.ajax({
-            url: base_url+""+SiteUrl.UpdateProductSubGroup,
-            type: Constant.Post,
-            contentType: Constant.ContentType,
-            data: JSON.stringify(searchModel),
-            dataType: Constant.Json,
-            success: function (result) {
-                if (result.Status == 200)
-                {                    
-                    $('#sub_group_name').val("");   
-                    $('#single-select').val("");            
-                    $(".submitData").show();
-                    $(".updateData").hide();   
-                    ShowNotification('success', 'Success',  result.Message);
-                   
-                    loadData1(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductSubGroupList, PageType.Pending, Constant.countQuery);
-                }
-                else {
-                    ShowNotification('error', 'Error', result.Message);                    
-                }
-            },
-            error: function (errormessage) {
-                ShowNotification('error', 'Error', 'Error..');                
-            }
-        });
-
-});
-
-function deleteData1(id)
-{
-    var result = confirm("Want to delete?");
-    if (result) {
-        var searchModel = { id: id };
-   
-    $.ajax({
-        url: base_url+""+SiteUrl.DeleteProductSubGroup,
-        type: Constant.Post,
-        contentType: Constant.ContentType,
-        data: JSON.stringify(searchModel),
-        dataType: Constant.Json,
-        success: function (result) {
-            if (result.Status)
-            {                    
-                ShowNotification('success', 'Success', 'Status ' + result.Message);
-                loadData1(Constant.DefaultPageIndex, Constant.DefaultPageSize, SiteUrl.ProductSubGroupList, PageType.Pending, Constant.countQuery);
-            }
-            else {
-                ShowNotification('error', 'Error', result.Message);                    
-            }
-        },
-        error: function (errormessage) {
-            ShowNotification('error', 'Error', 'Error..');                
-        }
-    });
-    }
-    
-}
+getInsurerName('LIFE');

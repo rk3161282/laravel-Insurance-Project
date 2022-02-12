@@ -1,7 +1,7 @@
 
 var Constant = {
     DefaultPageIndex : 1,
-    DefaultPageSize: 3,
+    DefaultPageSize: 10,
     Post: "POST",
     Get: "GET",
     ContentType: "application/json;charset=utf-8",
@@ -61,12 +61,42 @@ var SiteUrl = {
     ProductGroupList : '/api/v1/ProductGroupList',
     UpdateProductGroup : '/api/v1/UpdateProductGroup',
     DeleteProductGroup : '/api/v1/DeleteProductGroup',
+
     productGroupName : '/api/v1/productGroupName',
+    productSubGroupName : '/api/v1/productSubGroupName',
 
     AddProductSubGroup : '/api/v1/AddProductSubGroup',
     ProductSubGroupList : '/api/v1/ProductSubGroupList',
     UpdateProductSubGroup : '/api/v1/UpdateProductSubGroup',
     DeleteProductSubGroup : '/api/v1/DeleteProductSubGroup',
+
+    
+    ProductList : '/api/v1/ProductList',
+    AddProduct : '/api/v1/AddProduct',
+    UpdateProduct : '/api/v1/UpdateProduct',
+    DeleteProduct : '/api/v1/DeleteProduct',
+
+    AddSericeTaxGst : '/api/v1/AddSericeTaxGst',
+    SericeTaxGstList : '/api/v1/SericeTaxGstList',
+    UpdateSericeTaxGst : '/api/v1/UpdateSericeTaxGst',
+    DeleteSericeTaxGst : '/api/v1/DeleteSericeTaxGst',
+
+    AddInsuranceCompany: '/api/v1/AddInsuranceCompany',
+    InsuranceCompanyList: '/api/v1/InsuranceCompanyList',
+    UpdateInsuranceCompany: '/api/v1/UpdateInsuranceCompany',
+    DeleteInsuranceCompany : '/api/v1/DeleteInsuranceCompany',
+
+    getInsurerName : '/api/v1/getInsurerName',
+
+    AddInsuranceBranch : '/api/v1/AddInsuranceBranch',
+    InsuranceBranchList: '/api/v1/InsuranceBranchList',
+    UpdateInsuranceBranch: '/api/v1/UpdateInsuranceBranch',
+    DeleteInsuranceBranch : '/api/v1/DeleteInsuranceBranch',
+
+    AddBrokerBranch : '/api/v1/AddBrokerBranch',
+    BrokerBranchList: '/api/v1/BrokerBranchList',
+    UpdateBrokerBranch: '/api/v1/UpdateBrokerBranch',
+    DeleteBrokerBranch : '/api/v1/DeleteBrokerBranch',
    
 }
 function BindPagerOne(Pager) {

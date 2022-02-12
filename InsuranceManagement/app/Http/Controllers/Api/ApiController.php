@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\product_groups;
 use App\Models\product_sub_groups;
+use App\Models\insurance_company;
 
 use App\Models\membership_sales_details;
 use App\Models\prime_membership_master;
@@ -206,6 +207,33 @@ class ApiController extends Controller
         $product_groups = product_groups::get();
        
         return response()->json(['Status'=>200,"Message"=>"Product Group Name fetch","data"=>$product_groups],200);
+       
+    }
+
+    public function getInsurerName(Request $request){
+        $data = json_decode($request->getContent(),true); 
+        if ($data == null) {
+            return response()->json(['Status'=>400,"authenticate"=>false,"Message"=>"No payload was found. Please refer to our API documentation."],200);
+        }
+        $insurance_type = $data['insurance_type'];
+
+        $insurance_company = insurance_company::where('insurance_type',$insurance_type)->get();
+       
+        return response()->json(['Status'=>200,"Message"=>"Insurer Company Name fetch","data"=>$insurance_company],200);
+       
+    }
+
+
+    public function productSubGroupName(Request $request){
+        $data = json_decode($request->getContent(),true); //true for assoc array--otherwise object return
+        // validate reuested payload is json type or not
+        if ($data == null) {
+            return response()->json(['Status'=>400,"authenticate"=>false,"Message"=>"No payload was found. Please refer to our API documentation."],200);
+        }
+        $parent_group_id = $data['parent_group_id'];
+        $product_sub_groups = product_sub_groups::where('parent_group_id',$parent_group_id)->get();
+       
+        return response()->json(['Status'=>200,"Message"=>"Product Sub Group Name fetch","data"=>$product_sub_groups],200);
        
     }
 
